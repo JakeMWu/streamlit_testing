@@ -22,6 +22,7 @@ def life_expectancy_predictor(model, scaled_values):
     return life_expectancy_prediction
 
 def main():
+    st.image("https://www.un.org/youthenvoy/wp-content/uploads/2014/09/WHO.jpg", use_column_width=True)
     st.title('Life Expectancy Predictor')
 
     if 'model' not in st.session_state:
