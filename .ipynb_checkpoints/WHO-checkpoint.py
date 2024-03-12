@@ -10,11 +10,14 @@ def life_expectancy_predictor(model, scaled_values):
     for p, x in zip(model['params'][1:], scaled_values):
         life_expectancy_prediction += p * x
     if 40.639251 < life_expectancy_prediction < 97.072899:
-        st.write(f'The estimated Life Expectancy is {round(life_expectancy_prediction, 2)} years')
+        years = int(life_expectancy_prediction)  # This will get the whole number part (years)
+        days = int((life_expectancy_prediction - years) * 365)  # Calculate the days from the remainder
+        st.write(f'The estimated Life Expectancy is {years} years and {days} days')
     else:
         st.write('\nWarning: The estimated Life Expectancy is far out the expected range.\n')
         if life_expectancy_prediction < 0:
             life_expectancy_prediction = 0
+            
             st.write('The estimated Life Expectancy is ', round(life_expectancy_prediction, 2))
     return life_expectancy_prediction
 
@@ -36,8 +39,12 @@ def main():
 
     if st.session_state['model']:
         values = []
+        # Specify the unit for each column
+        units = {'GDP': 'per capita', 'Adult Mortality': 'per 1000', 'Infant Deaths': 'per 1000'}
         for col in st.session_state['model']['columns']:
-            value = st.number_input(f'Provide a value for {col}:', key=col, format="%f")
+            # Include the unit in the prompt
+            prompt = f'Provide a value for {col} ({units.get(col, "")}):'
+            value = st.number_input(prompt, key=col, format="%f")
             if col == 'GDP':
                 value = np.log(value)
             values.append(scale(value, col))
